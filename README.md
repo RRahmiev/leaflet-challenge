@@ -35,3 +35,9 @@ Your first task is to visualize an earthquake dataset. Complete the following st
   * Create a legend that will provide context for your map data.
 
   * Your visualization should look something like the preceding map.
+
+# Link to Earthquake Visualization
+
+Please use the following link to access the map:
+
+* https://rrahmiev.github.io/leaflet-challenge/
