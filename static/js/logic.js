@@ -1,11 +1,11 @@
-// Define earthquakes plates GeoJSON url variable
-var earthquakesURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+// Defining URL to data source
+var json_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
-// Create earthquake layerGroup
+// Creating layer group
 var earthquakes = L.layerGroup();
 
-// Create tile layer
-var grayscaleMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", 
+// Creating tile layer
+var grayscale_map = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", 
 {
   attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
   tileSize: 512,
@@ -15,21 +15,21 @@ var grayscaleMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/
   accessToken: API_KEY
 });
 
-// Create the map, giving it the grayscaleMap and earthquakes layers to display on load
+// Creating map and adding layers
 var myMap = L.map("mapid", {
   center: [
     37.09, -95.71
   ],
   zoom: 2,
-  layers: [grayscaleMap, earthquakes]
+  layers: [grayscale_map, earthquakes]
 });
 
-d3.json(earthquakesURL, function(earthquakeData) {
-  // Determine the marker size by magnitude
+d3.json(json_url, function(earthquakeData) {
+  // Setting marker size to equal magnitude
   function markerSize(magnitude) {
     return magnitude * 4;
   };
-  // Determine the marker color by depth
+  // Setting marker color to equal depth
   function chooseColor(depth) {
     switch(true) {
       case depth > 90:
@@ -47,12 +47,10 @@ d3.json(earthquakesURL, function(earthquakeData) {
     }
   }
 
-  // Create a GeoJSON layer containing the features array
-  // Each feature a popup describing the place and time of the earthquake
+  // Creating popup containg information on location and time of each earthquake
   L.geoJSON(earthquakeData, {
     pointToLayer: function (feature, latlng) {
       return L.circleMarker(latlng, 
-        // Set the style of the markers based on properties.mag
         {
           radius: markerSize(feature.properties.mag),
           fillColor: chooseColor(feature.geometry.coordinates[2]),
@@ -68,10 +66,10 @@ d3.json(earthquakesURL, function(earthquakeData) {
       + new Date(feature.properties.time) + "</p><hr><p>Magnitude: " + feature.properties.mag + "</p>");
     }
   }).addTo(earthquakes);
-  // Sending our earthquakes layer to the createMap function
+  // Adding layers to the map
   earthquakes.addTo(myMap);
 
-    // Add legend
+    // Adding legend
   var legend = L.control({position: "bottomright"});
   legend.onAdd = function() {
     var div = L.DomUtil.create("div", "info legend"),
